@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Airflow Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Ambient background grain -->
+  <div class="grain-overlay"></div>
+
+  <header class="header">
+    <div class="header__left">
+      <div class="header__logo">
+        <span class="header__dot"></span>
+        <span class="header__dot header__dot--amber"></span>
+        <span class="header__dot header__dot--green"></span>
+      </div>
+      <h1 class="header__title">AIRFLOW<span class="header__title--thin"> DASHBOARD</span></h1>
+    </div>
+    <div class="header__right">
+      <div class="header__updated" id="lastUpdated">
+        <span class="header__updated-label">LAST SYNC</span>
+        <span class="header__updated-time" id="lastUpdatedTime">--:--:--</span>
+      </div>
+      <div class="header__controls">
+        <input type="date" id="datePicker" class="header__date-picker">
+        <button id="autoRefreshBtn" class="header__refresh-btn" title="자동 갱신 (5분)">
+          <svg class="header__refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12a9 9 0 11-2.636-6.364"/>
+            <path d="M21 3v6h-6"/>
+          </svg>
+          <span class="header__refresh-label">AUTO</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <!-- Row 1 -->
+    <section class="panel panel--crypto" id="cryptoPanel">
+      <div class="panel__header">
+        <h2 class="panel__title">
+          <span class="panel__icon">₿</span> 암호화폐 시세
+        </h2>
+        <div class="panel__badge" id="cryptoCount">--</div>
+      </div>
+      <div class="panel__body">
+        <div class="crypto-cards" id="cryptoCards"></div>
+        <div class="chart-container">
+          <canvas id="cryptoChart"></canvas>
+        </div>
+      </div>
+      <div class="panel__loading" id="cryptoLoading">
+        <div class="skeleton skeleton--cards">
+          <div class="skeleton__card"></div>
+          <div class="skeleton__card"></div>
+          <div class="skeleton__card"></div>
+        </div>
+        <div class="skeleton skeleton--chart"></div>
+      </div>
+    </section>
+
+    <section class="panel panel--population" id="populationPanel">
+      <div class="panel__header">
+        <h2 class="panel__title">
+          <span class="panel__icon">👥</span> 실시간 유동인구
+        </h2>
+        <select id="populationAreaSelect" class="panel__select"></select>
+      </div>
+      <div class="panel__body">
+        <div class="population-top">
+          <div class="congestion-badge" id="congestionBadge">
+            <span class="congestion-badge__level">--</span>
+            <span class="congestion-badge__count">--</span>
+          </div>
+          <div class="donut-container">
+            <canvas id="ageDonutChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas id="populationChart"></canvas>
+        </div>
+      </div>
+      <div class="panel__loading" id="populationLoading">
+        <div class="skeleton skeleton--badge"></div>
+        <div class="skeleton skeleton--chart"></div>
+      </div>
+    </section>
+
+    <!-- Row 2 -->
+    <section class="panel panel--weather" id="weatherPanel">
+      <div class="panel__header">
+        <h2 class="panel__title">
+          <span class="panel__icon">🌡</span> 기상 관측
+        </h2>
+      </div>
+      <div class="panel__body">
+        <div class="weather-cards" id="weatherCards"></div>
+        <div class="chart-container">
+          <canvas id="weatherChart"></canvas>
+        </div>
+      </div>
+      <div class="panel__loading" id="weatherLoading">
+        <div class="skeleton skeleton--cards">
+          <div class="skeleton__card"></div>
+          <div class="skeleton__card"></div>
+          <div class="skeleton__card"></div>
+        </div>
+        <div class="skeleton skeleton--chart"></div>
+      </div>
+    </section>
+
+    <section class="panel panel--subway" id="subwayPanel">
+      <div class="panel__header">
+        <h2 class="panel__title">
+          <span class="panel__icon">🚇</span> 지하철 도착정보
+        </h2>
+        <select id="subwayStationSelect" class="panel__select"></select>
+      </div>
+      <div class="panel__body">
+        <div class="subway-table-wrap" id="subwayTableWrap">
+          <table class="subway-table" id="subwayTable">
+            <thead>
+              <tr>
+                <th>노선</th>
+                <th>방향</th>
+                <th>행선지</th>
+                <th>도착</th>
+              </tr>
+            </thead>
+            <tbody id="subwayTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel__loading" id="subwayLoading">
+        <div class="skeleton skeleton--table"></div>
+      </div>
+    </section>
+
+    <!-- Trend row -->
+    <section class="panel panel--trend" id="trendPanel">
+      <div class="panel__header">
+        <h2 class="panel__title">
+          <span class="panel__icon">📈</span> 주간 트렌드
+        </h2>
+        <div class="trend-tabs" id="trendTabs">
+          <button class="trend-tab trend-tab--active" data-type="crypto">암호화폐</button>
+          <button class="trend-tab" data-type="population">유동인구</button>
+          <button class="trend-tab" data-type="weather">기상</button>
+          <button class="trend-tab" data-type="subway">지하철</button>
+        </div>
+      </div>
+      <div class="panel__body">
+        <div class="chart-container chart-container--trend">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>AIRFLOW BATCH PIPELINE</span>
+    <span class="footer__sep">·</span>
+    <span>PRODESK K3S</span>
+    <span class="footer__sep">·</span>
+    <span id="footerDate"></span>
+  </footer>
+
+  <script src="/js/charts/crypto.js"></script>
+  <script src="/js/charts/population.js"></script>
+  <script src="/js/charts/weather.js"></script>
+  <script src="/js/charts/subway.js"></script>
+  <script src="/js/charts/trend.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
