@@ -56,10 +56,11 @@ const SubwayPanel = (() => {
 
   function render(data) {
     document.getElementById('subwayLoading').classList.remove('active');
-    if (!data || Object.keys(data).length === 0) {
-      document.querySelector('#subwayPanel .panel__body').innerHTML = '<div class="no-data">데이터 없음</div>';
-      return;
-    }
+    const noData = document.getElementById('subwayNoData');
+    const isEmpty = !data || Object.keys(data).length === 0;
+    noData.classList.toggle('active', isEmpty);
+    document.getElementById('subwayTableWrap').style.display = isEmpty ? 'none' : '';
+    if (isEmpty) return;
     allData = data;
     populateSelect(data);
     const selected = document.getElementById('subwayStationSelect').value || Object.keys(data)[0];

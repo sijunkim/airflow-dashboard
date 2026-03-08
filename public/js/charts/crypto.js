@@ -122,10 +122,12 @@ const CryptoPanel = (() => {
   }
 
   function render(data) {
-    const loading = document.getElementById('cryptoLoading');
-    loading.classList.remove('active');
-    if (!data || Object.keys(data).length === 0) {
-      document.querySelector('#cryptoPanel .panel__body').innerHTML = '<div class="no-data">데이터 없음</div>';
+    document.getElementById('cryptoLoading').classList.remove('active');
+    const noData = document.getElementById('cryptoNoData');
+    const isEmpty = !data || Object.keys(data).length === 0;
+    noData.classList.toggle('active', isEmpty);
+    if (isEmpty) {
+      document.getElementById('cryptoCards').innerHTML = '';
       return;
     }
     renderCards(data);

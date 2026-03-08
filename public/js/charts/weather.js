@@ -111,8 +111,12 @@ const WeatherPanel = (() => {
 
   function render(data) {
     document.getElementById('weatherLoading').classList.remove('active');
-    if (!data || Object.keys(data).length === 0) {
-      document.querySelector('#weatherPanel .panel__body').innerHTML = '<div class="no-data">데이터 없음</div>';
+    const noData = document.getElementById('weatherNoData');
+    const isEmpty = !data || Object.keys(data).length === 0;
+    noData.classList.toggle('active', isEmpty);
+    document.getElementById('weatherChartWrap').style.display = isEmpty ? 'none' : '';
+    if (isEmpty) {
+      document.getElementById('weatherCards').innerHTML = '';
       return;
     }
     renderCards(data);

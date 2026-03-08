@@ -179,10 +179,12 @@ const PopulationPanel = (() => {
 
   function render(data) {
     document.getElementById('populationLoading').classList.remove('active');
-    if (!data || Object.keys(data).length === 0) {
-      document.querySelector('#populationPanel .panel__body').innerHTML = '<div class="no-data">데이터 없음</div>';
-      return;
-    }
+    const noData = document.getElementById('populationNoData');
+    const isEmpty = !data || Object.keys(data).length === 0;
+    noData.classList.toggle('active', isEmpty);
+    document.getElementById('populationTop').style.display = isEmpty ? 'none' : '';
+    document.getElementById('populationChartWrap').style.display = isEmpty ? 'none' : '';
+    if (isEmpty) return;
     allData = data;
     populateSelect(data);
     const selected = document.getElementById('populationAreaSelect').value || Object.keys(data)[0];

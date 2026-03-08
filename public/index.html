@@ -51,6 +51,7 @@
         <div class="panel__badge" id="cryptoCount">--</div>
       </div>
       <div class="panel__body">
+        <div class="no-data" id="cryptoNoData">데이터 없음</div>
         <div class="crypto-cards" id="cryptoCards"></div>
         <div class="chart-container">
           <canvas id="cryptoChart"></canvas>
@@ -74,7 +75,8 @@
         <select id="populationAreaSelect" class="panel__select"></select>
       </div>
       <div class="panel__body">
-        <div class="population-top">
+        <div class="no-data" id="populationNoData">데이터 없음</div>
+        <div class="population-top" id="populationTop">
           <div class="congestion-badge" id="congestionBadge">
             <span class="congestion-badge__level">--</span>
             <span class="congestion-badge__count">--</span>
@@ -83,7 +85,7 @@
             <canvas id="ageDonutChart"></canvas>
           </div>
         </div>
-        <div class="chart-container">
+        <div class="chart-container" id="populationChartWrap">
           <canvas id="populationChart"></canvas>
         </div>
       </div>
@@ -101,8 +103,9 @@
         </h2>
       </div>
       <div class="panel__body">
+        <div class="no-data" id="weatherNoData">데이터 없음</div>
         <div class="weather-cards" id="weatherCards"></div>
-        <div class="chart-container">
+        <div class="chart-container" id="weatherChartWrap">
           <canvas id="weatherChart"></canvas>
         </div>
       </div>
@@ -124,6 +127,7 @@
         <select id="subwayStationSelect" class="panel__select"></select>
       </div>
       <div class="panel__body">
+        <div class="no-data" id="subwayNoData">데이터 없음</div>
         <div class="subway-table-wrap" id="subwayTableWrap">
           <table class="subway-table" id="subwayTable">
             <thead>
