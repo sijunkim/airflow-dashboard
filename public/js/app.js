@@ -38,13 +38,16 @@
     TrendPanel.destroy();
   }
 
-  // ---- Auto Refresh (at :00, :05, :10, ... :55) ----
+  // ---- Auto Refresh (at :02, :07, :12, ... :57) ----
+  // +2분 오프셋: DAG 완료 대기 후 갱신
   function scheduleNextRefresh() {
     const now = new Date();
     const min = now.getMinutes();
     const sec = now.getSeconds();
     const ms = now.getMilliseconds();
-    const nextSlot = Math.ceil((min + 1) / 5) * 5;
+    const offset = 2;
+    const slotMin = Math.floor(min / 5) * 5 + offset;
+    const nextSlot = slotMin > min || (slotMin === min && sec === 0 && ms === 0) ? slotMin : slotMin + 5;
     const delayMs = ((nextSlot - min) * 60 - sec) * 1000 - ms;
     autoRefreshInterval = setTimeout(() => {
       const picker = document.getElementById('datePicker');
@@ -119,8 +122,8 @@
     WeatherPanel.render(weather?.data || {});
     SubwayPanel.render(subway?.data || {});
 
-    // Update timestamp
-    updateTimestamp(crypto?.lastUpdated || population?.lastUpdated);
+    // Update timestamp to current browser time
+    updateTimestamp();
 
     // Load trend
     const activeTab = document.querySelector('.trend-tab--active');
@@ -134,14 +137,9 @@
     TrendPanel.renderChart(type, data?.trend || []);
   }
 
-  function updateTimestamp(iso) {
-    const el = document.getElementById('lastUpdatedTime');
-    if (iso) {
-      const d = new Date(iso);
-      el.textContent = d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    } else {
-      el.textContent = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    }
+  function updateTimestamp() {
+    document.getElementById('lastUpdatedTime').textContent =
+      new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   }
 
   function daysAgo(n) {

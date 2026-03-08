@@ -4,7 +4,7 @@ const { aggregate, aggregateForTrend } = require('../services/aggregator');
 const cache = require('../services/cache');
 
 const router = Router();
-const TODAY_TTL = 5 * 60 * 1000; // 5 minutes
+const TODAY_TTL = 60 * 1000; // 1 minute
 
 function today() {
   return new Date().toISOString().slice(0, 10);
