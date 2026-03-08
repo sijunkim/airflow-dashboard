@@ -38,7 +38,23 @@
     TrendPanel.destroy();
   }
 
-  // ---- Auto Refresh ----
+  // ---- Auto Refresh (at :00, :05, :10, ... :55) ----
+  function scheduleNextRefresh() {
+    const now = new Date();
+    const min = now.getMinutes();
+    const sec = now.getSeconds();
+    const ms = now.getMilliseconds();
+    const nextSlot = Math.ceil((min + 1) / 5) * 5;
+    const delayMs = ((nextSlot - min) * 60 - sec) * 1000 - ms;
+    autoRefreshInterval = setTimeout(() => {
+      const picker = document.getElementById('datePicker');
+      if (picker.value === todayStr()) {
+        loadAllData();
+      }
+      if (isAutoRefresh) scheduleNextRefresh();
+    }, delayMs);
+  }
+
   function setupAutoRefresh() {
     const btn = document.getElementById('autoRefreshBtn');
     btn.addEventListener('click', () => {
@@ -46,14 +62,9 @@
       btn.classList.toggle('active', isAutoRefresh);
 
       if (isAutoRefresh) {
-        autoRefreshInterval = setInterval(() => {
-          const picker = document.getElementById('datePicker');
-          if (picker.value === todayStr()) {
-            loadAllData();
-          }
-        }, 5 * 60 * 1000);
+        scheduleNextRefresh();
       } else {
-        clearInterval(autoRefreshInterval);
+        clearTimeout(autoRefreshInterval);
         autoRefreshInterval = null;
       }
     });
