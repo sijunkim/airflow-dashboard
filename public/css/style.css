@@ -44,7 +44,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  font-size: 14px;
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -232,9 +232,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  padding: 20px 28px;
-  max-width: 1600px;
-  margin: 0 auto;
+  padding: 20px 20px;
 }
 
 /* ---- PANELS ---- */
@@ -265,7 +263,7 @@ body {
 }
 
 .panel__title {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 500;
   color: var(--text-secondary);
   display: flex;
@@ -400,7 +398,7 @@ body {
 }
 
 .crypto-card__name {
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -410,7 +408,7 @@ body {
 
 .crypto-card__price {
   font-family: var(--font-mono);
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 4px;
@@ -418,7 +416,7 @@ body {
 
 .crypto-card__change {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 500;
 }
 
@@ -427,7 +425,7 @@ body {
 
 .crypto-card__range {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.73rem;
   color: var(--text-muted);
   margin-top: 2px;
 }
@@ -456,7 +454,7 @@ body {
 
 .congestion-badge__level {
   display: block;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 4px;
 }
@@ -468,7 +466,7 @@ body {
 
 .congestion-badge__count {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
 }
 
@@ -494,7 +492,7 @@ body {
 }
 
 .weather-card__location {
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--text-muted);
   letter-spacing: 0.5px;
@@ -503,7 +501,7 @@ body {
 
 .weather-card__temp {
   font-family: var(--font-mono);
-  font-size: 1.3rem;
+  font-size: 1.45rem;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -519,7 +517,7 @@ body {
   gap: 10px;
   margin-top: 6px;
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
 }
 
@@ -551,7 +549,7 @@ body {
 .subway-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
 }
 
 .subway-table thead {
@@ -564,7 +562,7 @@ body {
   background: var(--bg-surface);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.73rem;
   font-weight: 500;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -589,7 +587,7 @@ body {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 10px;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: #fff;
   white-space: nowrap;
@@ -597,7 +595,7 @@ body {
 
 .subway-arrival {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
 }
 
 .subway-arrival--soon {
