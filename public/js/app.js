@@ -1,7 +1,7 @@
 /* Main Application Logic */
 (() => {
   const API = '/api/v1';
-  let autoRefreshInterval = null;
+  let refreshTimer = null;
   let isAutoRefresh = false;
 
   // ---- Init ----
@@ -9,9 +9,10 @@
     setTodayDate();
     setupDatePicker();
     setupAutoRefresh();
+    setupVisibilityHandler();
     setupTrendTabs();
     loadAllData();
-    document.getElementById('footerDate').textContent = new Date().toISOString().slice(0, 10);
+    document.getElementById('footerDate').textContent = todayStr();
   }
 
   function setTodayDate() {
@@ -19,8 +20,10 @@
     picker.value = todayStr();
   }
 
+  // 로컬 타임존 기준 오늘 날짜 (KST)
   function todayStr() {
-    return new Date().toISOString().slice(0, 10);
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
 
   // ---- Date Picker ----
@@ -41,6 +44,7 @@
   // ---- Auto Refresh (at :02, :07, :12, ... :57) ----
   // +2분 오프셋: DAG 완료 대기 후 갱신
   function scheduleNextRefresh() {
+    clearTimeout(refreshTimer);
     const now = new Date();
     const min = now.getMinutes();
     const sec = now.getSeconds();
@@ -49,7 +53,7 @@
     const slotMin = Math.floor(min / 5) * 5 + offset;
     const nextSlot = slotMin > min || (slotMin === min && sec === 0 && ms === 0) ? slotMin : slotMin + 5;
     const delayMs = ((nextSlot - min) * 60 - sec) * 1000 - ms;
-    autoRefreshInterval = setTimeout(() => {
+    refreshTimer = setTimeout(() => {
       const picker = document.getElementById('datePicker');
       if (picker.value === todayStr()) {
         loadAllData();
@@ -67,13 +71,27 @@
       if (isAutoRefresh) {
         scheduleNextRefresh();
       } else {
-        clearTimeout(autoRefreshInterval);
-        autoRefreshInterval = null;
+        clearTimeout(refreshTimer);
+        refreshTimer = null;
       }
     });
 
     // Auto-enable on load
     btn.click();
+  }
+
+  // ---- Visibility Handler ----
+  // 브라우저 탭이 백그라운드 → 포그라운드 전환 시 타이머 복구
+  function setupVisibilityHandler() {
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden || !isAutoRefresh) return;
+      // 탭 복귀 시: 즉시 데이터 갱신 + 타이머 체인 재시작
+      const picker = document.getElementById('datePicker');
+      if (picker.value === todayStr()) {
+        loadAllData();
+      }
+      scheduleNextRefresh();
+    });
   }
 
   // ---- Trend Tabs ----

@@ -7,7 +7,8 @@ const router = Router();
 const TODAY_TTL = 60 * 1000; // 1 minute
 
 function today() {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  return d.toISOString().slice(0, 10);
 }
 
 function isValidDate(s) {
@@ -94,7 +95,7 @@ router.get('/:type/trend', async (req, res) => {
 });
 
 function daysAgo(n) {
-  const d = new Date();
+  const d = new Date(Date.now() + 9 * 60 * 60 * 1000);
   d.setDate(d.getDate() - n);
   return d.toISOString().slice(0, 10);
 }
