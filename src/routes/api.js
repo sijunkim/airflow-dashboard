@@ -74,7 +74,7 @@ router.get('/daily/trend', (req, res) => {
   if (!isValidDate(from) || !isValidDate(to)) return res.status(400).json({ error: 'Invalid date' });
 
   const dates = dateRange(from, to);
-  if (dates.length > 90) return res.status(400).json({ error: 'Max 90 days' });
+  if (dates.length > 180) return res.status(400).json({ error: 'Max 180 days' });
 
   const trend = [];
   for (const date of dates) {
@@ -151,7 +151,7 @@ router.get('/:type/trend', asyncHandler(async (req, res) => {
   if (!isValidDate(from) || !isValidDate(to)) return res.status(400).json({ error: 'Invalid date' });
 
   const dates = dateRange(from, to);
-  if (dates.length > 90) return res.status(400).json({ error: 'Max 90 days' });
+  if (dates.length > 180) return res.status(400).json({ error: 'Max 180 days' });
 
   const trend = [];
   for (const date of dates) {

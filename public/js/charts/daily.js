@@ -72,7 +72,11 @@ const DailyPanel = (() => {
     }
 
     wrap.style.display = '';
-    const labels = trendData.map(t => t.date.slice(5));
+    const labels = trendData.map(t => {
+      const mm = t.date.slice(5, 7);
+      const dd = t.date.slice(8, 10);
+      return trendData.length > 60 ? `${parseInt(mm)}/${parseInt(dd)}` : `${mm}-${dd}`;
+    });
     const typeKeys = new Set();
     trendData.forEach(t => t.types?.forEach(tp => typeKeys.add(tp.type)));
 
@@ -139,7 +143,7 @@ const DailyPanel = (() => {
         },
         scales: {
           x: {
-            ticks: { color: '#5a6e8a', font: { family: "'JetBrains Mono'", size: 9 } },
+            ticks: { color: '#5a6e8a', font: { family: "'JetBrains Mono'", size: 9 }, maxTicksLimit: 15 },
             grid: { color: 'rgba(30,58,95,0.3)' },
           },
           y: {

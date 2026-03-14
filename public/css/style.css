@@ -377,6 +377,10 @@ body {
   height: 200px;
 }
 
+.chart-container--daily-trend {
+  height: 400px;
+}
+
 /* ---- CRYPTO PANEL ---- */
 .crypto-cards {
   display: flex;

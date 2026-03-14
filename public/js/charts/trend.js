@@ -22,13 +22,21 @@ const TrendPanel = (() => {
     coinFilter = coin === 'ALL' ? null : (COIN_ALIAS[coin] || coin);
   }
 
+  function formatDateLabel(dateStr, total) {
+    // MM-DD for short periods, M/D for longer periods
+    const mm = dateStr.slice(5, 7);
+    const dd = dateStr.slice(8, 10);
+    if (total > 60) return `${parseInt(mm)}/${parseInt(dd)}`;
+    return `${mm}-${dd}`;
+  }
+
   function buildDatasets(type, trendData) {
     const colors = TYPE_COLORS[type] || ['#888'];
     const datasets = [];
 
     if (!trendData || trendData.length === 0) return { labels: [], datasets: [] };
 
-    const labels = trendData.map(t => t.date.slice(5)); // MM-DD
+    const labels = trendData.map(t => formatDateLabel(t.date, trendData.length));
     const keys = new Set();
     trendData.forEach(t => {
       if (t.summary) Object.keys(t.summary).forEach(k => keys.add(k));
@@ -136,7 +144,7 @@ const TrendPanel = (() => {
         },
         scales: {
           x: {
-            ticks: { color: '#5a6e8a', font: { family: "'JetBrains Mono'", size: 9 } },
+            ticks: { color: '#5a6e8a', font: { family: "'JetBrains Mono'", size: 9 }, maxTicksLimit: 15 },
             grid: { color: 'rgba(30,58,95,0.3)' },
           },
           y: {
