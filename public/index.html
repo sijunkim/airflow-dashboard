@@ -213,6 +213,14 @@
     </section>
   </main>
 
+  <div id="debugPanel" class="debug-panel" style="display:none;">
+    <div class="debug-panel__header">
+      <span>진단 정보</span>
+      <button class="debug-panel__close" onclick="this.parentElement.parentElement.style.display='none'">&times;</button>
+    </div>
+    <pre class="debug-panel__content" id="debugInfo"></pre>
+  </div>
+
   <footer class="footer">
     <span>AIRFLOW BATCH PIPELINE</span>
     <span class="footer__sep">·</span>

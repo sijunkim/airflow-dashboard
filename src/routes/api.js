@@ -1,8 +1,10 @@
 const { Router } = require('express');
-const { readJsonl, readDailyJson, availableDates, VALID_TYPES } = require('../services/dataReader');
+const fs = require('fs');
+const path = require('path');
+const { readJsonl, readDailyJson, availableDates, VALID_TYPES, DATA_DIR } = require('../services/dataReader');
 const { aggregate, aggregateForTrend } = require('../services/aggregator');
 const cache = require('../services/cache');
-const { getStatus: getMigrationStatus } = require('../migrations/kstMigration');
+const { getStatus: getMigrationStatus, MARKER_FILE } = require('../migrations/kstMigration');
 
 const router = Router();
 const TODAY_TTL = 60 * 1000; // 1 minute
@@ -24,6 +26,64 @@ router.get('/migration/status', (_req, res) => {
   const status = getMigrationStatus();
   if (!status) return res.json({ migrated: false });
   res.json({ migrated: true, ...status });
+});
+
+router.get('/debug', (_req, res) => {
+  let migrationError = null;
+  try {
+    migrationError = require('../server').getMigrationError();
+  } catch (_) { /* server module may not export yet */ }
+
+  const info = {
+    dataDir: DATA_DIR,
+    dataDirExists: fs.existsSync(DATA_DIR),
+    markerFile: MARKER_FILE,
+    markerExists: fs.existsSync(MARKER_FILE),
+    migrationError,
+    types: {},
+  };
+
+  for (const type of VALID_TYPES) {
+    const typeDir = path.join(DATA_DIR, type);
+    if (!fs.existsSync(typeDir)) {
+      info.types[type] = { exists: false };
+      continue;
+    }
+    const files = fs.readdirSync(typeDir).filter(f => f.endsWith('.jsonl'));
+    info.types[type] = {
+      exists: true,
+      fileCount: files.length,
+      files: files.sort(),
+    };
+  }
+
+  const dailyDir = path.join(DATA_DIR, 'daily');
+  info.dailyDirExists = fs.existsSync(dailyDir);
+  if (info.dailyDirExists) {
+    info.dailyFiles = fs.readdirSync(dailyDir).filter(f => f.endsWith('.json')).sort();
+  }
+
+  // Sample first record from each type to check collected_at format
+  info.sampleTimestamps = {};
+  for (const type of VALID_TYPES) {
+    const typeDir = path.join(DATA_DIR, type);
+    if (!fs.existsSync(typeDir)) continue;
+    const files = fs.readdirSync(typeDir).filter(f => f.endsWith('.jsonl')).sort();
+    if (files.length === 0) continue;
+    try {
+      const content = fs.readFileSync(path.join(typeDir, files[0]), 'utf-8');
+      const firstLine = content.split('\n').find(l => l.trim());
+      if (firstLine) {
+        const record = JSON.parse(firstLine);
+        info.sampleTimestamps[type] = {
+          file: files[0],
+          collected_at: record.collected_at || null,
+        };
+      }
+    } catch (_) { /* skip */ }
+  }
+
+  res.json(info);
 });
 
 router.get('/meta', (_req, res) => {

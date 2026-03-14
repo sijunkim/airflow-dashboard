@@ -105,6 +105,45 @@ body {
   opacity: 1;
 }
 
+.debug-panel {
+  margin: 12px 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.debug-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--bg-surface);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.debug-panel__close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.debug-panel__content {
+  padding: 12px 14px;
+  margin: 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 /* ---- HEADER ---- */
 .header {
   display: flex;

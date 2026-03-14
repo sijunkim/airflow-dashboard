@@ -30,8 +30,15 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
+let migrationError = null;
+
 async function start() {
-  await migrate();
+  try {
+    await migrate();
+  } catch (err) {
+    migrationError = err.message;
+    console.error('[Migration] Failed:', err.message, err.stack);
+  }
   app.listen(PORT, () => {
     console.log(`Dashboard running on port ${PORT}`);
     console.log(`Data directory: ${DATA_DIR}`);
@@ -41,4 +48,8 @@ async function start() {
   });
 }
 
+function getMigrationError() { return migrationError; }
+
 start();
+
+module.exports = { getMigrationError };

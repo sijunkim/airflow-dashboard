@@ -217,10 +217,17 @@
   // ---- Migration Status ----
   async function checkMigrationStatus() {
     const data = await fetchJSON(`${API}/migration/status`);
-    if (!data) return;
+    console.log('[Migration] status response:', data);
 
     const banner = document.getElementById('migrationBanner');
     const text = document.getElementById('migrationText');
+
+    if (!data) {
+      text.textContent = 'KST 마이그레이션 상태 확인 실패 (API 응답 없음)';
+      banner.classList.add('migration-banner--warning');
+      banner.style.display = '';
+      return;
+    }
 
     if (data.migrated) {
       const total = Object.values(data.types || {}).reduce((sum, t) => sum + (t.records || 0), 0);
@@ -237,6 +244,15 @@
     document.getElementById('migrationClose').addEventListener('click', () => {
       banner.style.display = 'none';
     });
+
+    // Load debug info
+    const debug = await fetchJSON(`${API}/debug`);
+    console.log('[Migration] debug info:', debug);
+    if (debug) {
+      const debugEl = document.getElementById('debugInfo');
+      debugEl.textContent = JSON.stringify(debug, null, 2);
+      document.getElementById('debugPanel').style.display = '';
+    }
   }
 
   // ---- Start ----
