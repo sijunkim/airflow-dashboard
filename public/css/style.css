@@ -68,6 +68,43 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* ---- MIGRATION BANNER ---- */
+.migration-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.migration-banner--success {
+  background: rgba(76, 175, 80, 0.15);
+  border-bottom: 1px solid rgba(76, 175, 80, 0.3);
+  color: #81c784;
+}
+
+.migration-banner--warning {
+  background: rgba(255, 152, 0, 0.15);
+  border-bottom: 1px solid rgba(255, 152, 0, 0.3);
+  color: #ffb74d;
+}
+
+.migration-banner__close {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.6;
+  padding: 0 4px;
+}
+
+.migration-banner__close:hover {
+  opacity: 1;
+}
+
 /* ---- HEADER ---- */
 .header {
   display: flex;

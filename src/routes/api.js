@@ -2,6 +2,7 @@ const { Router } = require('express');
 const { readJsonl, readDailyJson, availableDates, VALID_TYPES } = require('../services/dataReader');
 const { aggregate, aggregateForTrend } = require('../services/aggregator');
 const cache = require('../services/cache');
+const { getStatus: getMigrationStatus } = require('../migrations/kstMigration');
 
 const router = Router();
 const TODAY_TTL = 60 * 1000; // 1 minute
@@ -18,6 +19,12 @@ function isValidDate(s) {
 function asyncHandler(fn) {
   return (req, res, next) => fn(req, res, next).catch(next);
 }
+
+router.get('/migration/status', (_req, res) => {
+  const status = getMigrationStatus();
+  if (!status) return res.json({ migrated: false });
+  res.json({ migrated: true, ...status });
+});
 
 router.get('/meta', (_req, res) => {
   const meta = {};

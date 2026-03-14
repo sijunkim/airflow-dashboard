@@ -164,11 +164,8 @@ function aggregate(type, rows) {
 
 function extractTime(collectedAt) {
   if (!collectedAt) return '';
-  const d = new Date(collectedAt + 'Z'); // treat as UTC
-  const kst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
-  const hh = String(kst.getUTCHours()).padStart(2, '0');
-  const mm = String(kst.getUTCMinutes()).padStart(2, '0');
-  return `${hh}:${mm}`;
+  // collected_at is KST (after migration or new batch with Asia/Seoul TZ)
+  return collectedAt.slice(11, 16); // "HH:MM"
 }
 
 function avg(arr) {
