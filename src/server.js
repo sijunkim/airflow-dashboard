@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 const apiRouter = require('./routes/api');
 const { DATA_DIR } = require('./services/dataReader');
-const { migrate } = require('./migrations/kstMigration');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,26 +29,10 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-let migrationError = null;
-
-async function start() {
-  try {
-    await migrate();
-  } catch (err) {
-    migrationError = err.message;
-    console.error('[Migration] Failed:', err.message, err.stack);
+app.listen(PORT, () => {
+  console.log(`Dashboard running on port ${PORT}`);
+  console.log(`Data directory: ${DATA_DIR}`);
+  if (!fs.existsSync(DATA_DIR)) {
+    console.warn(`WARNING: Data directory not found: ${DATA_DIR}`);
   }
-  app.listen(PORT, () => {
-    console.log(`Dashboard running on port ${PORT}`);
-    console.log(`Data directory: ${DATA_DIR}`);
-    if (!fs.existsSync(DATA_DIR)) {
-      console.warn(`WARNING: Data directory not found: ${DATA_DIR}`);
-    }
-  });
-}
-
-function getMigrationError() { return migrationError; }
-
-start();
-
-module.exports = { getMigrationError };
+});

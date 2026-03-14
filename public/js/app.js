@@ -13,7 +13,6 @@
     setupVisibilityHandler();
     setupTrendTabs();
     loadAllData();
-    checkMigrationStatus();
     document.getElementById('footerDate').textContent = todayStr();
   }
 
@@ -212,47 +211,6 @@
     const d = new Date(Date.now() + 9 * 60 * 60 * 1000);
     d.setDate(d.getDate() - n);
     return d.toISOString().slice(0, 10);
-  }
-
-  // ---- Migration Status ----
-  async function checkMigrationStatus() {
-    const data = await fetchJSON(`${API}/migration/status`);
-    console.log('[Migration] status response:', data);
-
-    const banner = document.getElementById('migrationBanner');
-    const text = document.getElementById('migrationText');
-
-    if (!data) {
-      text.textContent = 'KST 마이그레이션 상태 확인 실패 (API 응답 없음)';
-      banner.classList.add('migration-banner--warning');
-      banner.style.display = '';
-      return;
-    }
-
-    if (data.migrated) {
-      const total = Object.values(data.types || {}).reduce((sum, t) => sum + (t.records || 0), 0);
-      const moved = Object.values(data.types || {}).reduce((sum, t) => sum + (t.moved || 0), 0);
-      const time = data.completedAt?.slice(0, 19).replace('T', ' ') || '';
-      text.textContent = `KST 마이그레이션 완료 | ${total}건 처리, ${moved}건 날짜 이동 | ${time}`;
-      banner.classList.add('migration-banner--success');
-    } else {
-      text.textContent = 'KST 마이그레이션 미완료';
-      banner.classList.add('migration-banner--warning');
-    }
-
-    banner.style.display = '';
-    document.getElementById('migrationClose').addEventListener('click', () => {
-      banner.style.display = 'none';
-    });
-
-    // Load debug info
-    const debug = await fetchJSON(`${API}/debug`);
-    console.log('[Migration] debug info:', debug);
-    if (debug) {
-      const debugEl = document.getElementById('debugInfo');
-      debugEl.textContent = JSON.stringify(debug, null, 2);
-      document.getElementById('debugPanel').style.display = '';
-    }
   }
 
   // ---- Start ----
