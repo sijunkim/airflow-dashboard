@@ -10,6 +10,12 @@ const TrendPanel = (() => {
     subway: ['#00A84D', '#0052A4', '#EF7C1C', '#00A4E3', '#D4003B'],
   };
 
+  let coinFilter = null; // null = show all, or 'BTC'/'ETH'/'SOL'
+
+  function setCoinFilter(coin) {
+    coinFilter = coin === 'ALL' ? null : coin;
+  }
+
   function buildDatasets(type, trendData) {
     const colors = TYPE_COLORS[type] || ['#888'];
     const datasets = [];
@@ -24,6 +30,11 @@ const TrendPanel = (() => {
 
     let idx = 0;
     for (const key of keys) {
+      if (type === 'crypto' && coinFilter && key !== coinFilter) {
+        idx++;
+        continue;
+      }
+
       const color = colors[idx % colors.length];
       const values = trendData.map(t => {
         const s = t.summary?.[key];
@@ -139,5 +150,5 @@ const TrendPanel = (() => {
     if (chart) { chart.destroy(); chart = null; }
   }
 
-  return { renderChart, destroy, getActiveType: () => activeType };
+  return { renderChart, destroy, getActiveType: () => activeType, setCoinFilter };
 })();

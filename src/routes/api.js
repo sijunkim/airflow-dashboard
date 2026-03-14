@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { readJsonl, availableDates, VALID_TYPES } = require('../services/dataReader');
+const { readJsonl, readDailyJson, availableDates, VALID_TYPES } = require('../services/dataReader');
 const { aggregate, aggregateForTrend } = require('../services/aggregator');
 const cache = require('../services/cache');
 
@@ -22,6 +22,45 @@ router.get('/meta', (_req, res) => {
     meta[type] = { dates, first: dates[0] || null, last: dates[dates.length - 1] || null };
   }
   res.json(meta);
+});
+
+router.get('/daily/today', (_req, res) => {
+  const date = today();
+  const cacheKey = `daily:${date}:today`;
+  let data = cache.get(cacheKey);
+
+  if (!data) {
+    const daily = readDailyJson(date);
+    if (!daily) return res.status(404).json({ error: 'No daily data' });
+    data = { date, lastUpdated: new Date().toISOString(), data: daily };
+    cache.set(cacheKey, data, TODAY_TTL);
+  }
+
+  res.json(data);
+});
+
+router.get('/daily/date/:date', (req, res) => {
+  const { date } = req.params;
+  if (!isValidDate(date)) return res.status(400).json({ error: 'Invalid date format' });
+
+  const isToday = date === today();
+  const cacheKey = `daily:${date}:day`;
+  let data = cache.get(cacheKey);
+
+  if (!data) {
+    const daily = readDailyJson(date);
+    if (!daily) return res.status(404).json({ error: 'No daily data' });
+    data = { date, data: daily };
+    cache.set(cacheKey, data, isToday ? TODAY_TTL : 0);
+  }
+
+  if (!isToday) {
+    const etag = `"daily-${date}"`;
+    res.set('ETag', etag);
+    if (req.headers['if-none-match'] === etag) return res.status(304).end();
+  }
+
+  res.json(data);
 });
 
 router.get('/:type/today', async (req, res) => {

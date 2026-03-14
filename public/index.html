@@ -160,9 +160,37 @@
           <button class="trend-tab" data-type="subway">지하철</button>
         </div>
       </div>
+      <div class="trend-subtabs" id="trendSubtabs" style="display:none;">
+        <button class="trend-subtab trend-subtab--active" data-coin="BTC">BTC</button>
+        <button class="trend-subtab" data-coin="ETH">ETH</button>
+        <button class="trend-subtab" data-coin="SOL">SOL</button>
+        <button class="trend-subtab" data-coin="ALL">전체</button>
+      </div>
       <div class="panel__body">
         <div class="chart-container chart-container--trend">
           <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Daily aggregate row -->
+    <section class="panel panel--daily" id="dailyPanel">
+      <div class="panel__header">
+        <h2 class="panel__title">
+          <span class="panel__icon">📊</span> 일일 집계
+        </h2>
+        <div class="panel__badge" id="dailyTotal">--</div>
+      </div>
+      <div class="panel__body">
+        <div class="no-data" id="dailyNoData">집계 데이터 없음</div>
+        <div class="daily-cards" id="dailyCards"></div>
+      </div>
+      <div class="panel__loading" id="dailyLoading">
+        <div class="skeleton skeleton--cards">
+          <div class="skeleton__card"></div>
+          <div class="skeleton__card"></div>
+          <div class="skeleton__card"></div>
+          <div class="skeleton__card"></div>
         </div>
       </div>
     </section>
@@ -181,6 +209,7 @@
   <script src="/js/charts/weather.js"></script>
   <script src="/js/charts/subway.js"></script>
   <script src="/js/charts/trend.js"></script>
+  <script src="/js/charts/daily.js"></script>
   <script src="/js/app.js"></script>
 </body>
 </html>

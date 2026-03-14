@@ -39,6 +39,7 @@
     PopulationPanel.destroy();
     WeatherPanel.destroy();
     TrendPanel.destroy();
+    DailyPanel.destroy();
   }
 
   // ---- Auto Refresh (at :02, :07, :12, ... :57) ----
@@ -101,8 +102,30 @@
       if (!tab) return;
       document.querySelectorAll('.trend-tab').forEach(t => t.classList.remove('trend-tab--active'));
       tab.classList.add('trend-tab--active');
+
+      const subtabs = document.getElementById('trendSubtabs');
+      if (tab.dataset.type === 'crypto') {
+        subtabs.style.display = '';
+      } else {
+        subtabs.style.display = 'none';
+        TrendPanel.setCoinFilter('ALL');
+      }
+
       loadTrend(tab.dataset.type);
     });
+
+    document.getElementById('trendSubtabs').addEventListener('click', (e) => {
+      const tab = e.target.closest('.trend-subtab');
+      if (!tab) return;
+      document.querySelectorAll('.trend-subtab').forEach(t => t.classList.remove('trend-subtab--active'));
+      tab.classList.add('trend-subtab--active');
+      TrendPanel.setCoinFilter(tab.dataset.coin);
+      loadTrend('crypto');
+    });
+
+    // Show subtabs initially since crypto is the default active tab
+    document.getElementById('trendSubtabs').style.display = '';
+    TrendPanel.setCoinFilter('BTC');
   }
 
   // ---- Data Loading ----
@@ -125,13 +148,15 @@
     PopulationPanel.showLoading();
     WeatherPanel.showLoading();
     SubwayPanel.showLoading();
+    DailyPanel.showLoading();
 
     // Fetch all in parallel
-    const [crypto, population, weather, subway] = await Promise.all([
+    const [crypto, population, weather, subway, daily] = await Promise.all([
       fetchJSON(`${API}/crypto/${endpoint}`),
       fetchJSON(`${API}/population/${endpoint}`),
       fetchJSON(`${API}/weather/${endpoint}`),
       fetchJSON(`${API}/subway/${endpoint}`),
+      fetchJSON(`${API}/daily/${endpoint}`),
     ]);
 
     // Render
@@ -139,6 +164,7 @@
     PopulationPanel.render(population?.data || {});
     WeatherPanel.render(weather?.data || {});
     SubwayPanel.render(subway?.data || {});
+    DailyPanel.render(daily?.data || null);
 
     // Update timestamp to current browser time
     updateTimestamp();

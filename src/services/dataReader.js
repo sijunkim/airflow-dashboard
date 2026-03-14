@@ -29,6 +29,16 @@ async function readJsonl(type, date) {
   return lines;
 }
 
+function readDailyJson(date) {
+  const fp = path.join(DATA_DIR, 'daily', `${date}.json`);
+  if (!fs.existsSync(fp)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(fp, 'utf-8'));
+  } catch (_) {
+    return null;
+  }
+}
+
 function availableDates(type) {
   const dir = path.join(DATA_DIR, type);
   if (!fs.existsSync(dir)) return [];
@@ -38,4 +48,4 @@ function availableDates(type) {
     .sort();
 }
 
-module.exports = { readJsonl, availableDates, VALID_TYPES, DATA_DIR };
+module.exports = { readJsonl, readDailyJson, availableDates, VALID_TYPES, DATA_DIR };

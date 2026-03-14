@@ -249,7 +249,8 @@ body {
   border-color: var(--border);
 }
 
-.panel--trend {
+.panel--trend,
+.panel--daily {
   grid-column: 1 / -1;
 }
 
@@ -640,6 +641,95 @@ body {
   background: rgba(0,188,212,0.06);
 }
 
+/* ---- TREND SUBTABS (coin filter) ---- */
+.trend-subtabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 18px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.trend-subtab {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 4px 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.trend-subtab:hover {
+  color: var(--text-secondary);
+}
+
+.trend-subtab--active {
+  color: var(--crypto-btc);
+  border-bottom-color: var(--crypto-btc);
+}
+
+/* ---- DAILY AGGREGATE PANEL ---- */
+.daily-cards {
+  display: flex;
+  gap: 12px;
+}
+
+.daily-card {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.daily-card:hover {
+  border-color: var(--border);
+  transform: translateY(-1px);
+}
+
+.daily-card__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.daily-card__icon {
+  font-size: 1rem;
+}
+
+.daily-card__label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.daily-card__records {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.daily-card__summary {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.daily-card__time {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
 /* ---- FOOTER ---- */
 .footer {
   text-align: center;
@@ -678,7 +768,7 @@ body {
     justify-content: space-between;
   }
 
-  .crypto-cards, .weather-cards {
+  .crypto-cards, .weather-cards, .daily-cards {
     flex-direction: column;
   }
 
@@ -707,6 +797,7 @@ body {
 .panel:nth-child(3) { animation-delay: 0.15s; }
 .panel:nth-child(4) { animation-delay: 0.2s; }
 .panel:nth-child(5) { animation-delay: 0.25s; }
+.panel:nth-child(6) { animation-delay: 0.3s; }
 
 /* No data state */
 .no-data {
