@@ -10,10 +10,16 @@ const TrendPanel = (() => {
     subway: ['#00A84D', '#0052A4', '#EF7C1C', '#00A4E3', '#D4003B'],
   };
 
-  let coinFilter = null; // null = show all, or 'BTC'/'ETH'/'SOL'
+  let coinFilter = null; // null = show all, or full coin name
+
+  const COIN_ALIAS = {
+    BTC: 'Bitcoin',
+    ETH: 'Ethereum',
+    SOL: 'Solana',
+  };
 
   function setCoinFilter(coin) {
-    coinFilter = coin === 'ALL' ? null : coin;
+    coinFilter = coin === 'ALL' ? null : (COIN_ALIAS[coin] || coin);
   }
 
   function buildDatasets(type, trendData) {
