@@ -612,9 +612,46 @@ body {
 }
 
 /* ---- TREND PANEL ---- */
+.trend-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .trend-tabs {
   display: flex;
   gap: 4px;
+}
+
+.trend-period {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.trend-period__btn {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.trend-period__btn:hover {
+  color: var(--text-secondary);
+  border-color: var(--text-secondary);
+}
+
+.trend-period__btn--active {
+  color: var(--accent-blue);
+  border-color: var(--accent-blue);
+  background: rgba(33,150,243,0.08);
 }
 
 .trend-tab {

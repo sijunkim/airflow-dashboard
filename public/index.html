@@ -153,11 +153,18 @@
         <h2 class="panel__title">
           <span class="panel__icon">📈</span> 주간 트렌드
         </h2>
-        <div class="trend-tabs" id="trendTabs">
-          <button class="trend-tab trend-tab--active" data-type="crypto">암호화폐</button>
-          <button class="trend-tab" data-type="population">유동인구</button>
-          <button class="trend-tab" data-type="weather">기상</button>
-          <button class="trend-tab" data-type="subway">지하철</button>
+        <div class="trend-controls">
+          <div class="trend-tabs" id="trendTabs">
+            <button class="trend-tab trend-tab--active" data-type="crypto">암호화폐</button>
+            <button class="trend-tab" data-type="population">유동인구</button>
+            <button class="trend-tab" data-type="weather">기상</button>
+            <button class="trend-tab" data-type="subway">지하철</button>
+          </div>
+          <div class="trend-period" id="trendPeriod">
+            <button class="trend-period__btn trend-period__btn--active" data-days="7">7D</button>
+            <button class="trend-period__btn" data-days="14">14D</button>
+            <button class="trend-period__btn" data-days="30">30D</button>
+          </div>
         </div>
       </div>
       <div class="trend-subtabs" id="trendSubtabs" style="display:none;">
@@ -184,6 +191,9 @@
       <div class="panel__body">
         <div class="no-data" id="dailyNoData">집계 데이터 없음</div>
         <div class="daily-cards" id="dailyCards"></div>
+        <div class="chart-container chart-container--trend" id="dailyTrendWrap" style="display:none;">
+          <canvas id="dailyTrendChart"></canvas>
+        </div>
       </div>
       <div class="panel__loading" id="dailyLoading">
         <div class="skeleton skeleton--cards">

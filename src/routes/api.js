@@ -15,6 +15,10 @@ function isValidDate(s) {
   return /^\d{4}-\d{2}-\d{2}$/.test(s);
 }
 
+function asyncHandler(fn) {
+  return (req, res, next) => fn(req, res, next).catch(next);
+}
+
 router.get('/meta', (_req, res) => {
   const meta = {};
   for (const type of VALID_TYPES) {
@@ -63,7 +67,39 @@ router.get('/daily/date/:date', (req, res) => {
   res.json(data);
 });
 
-router.get('/:type/today', async (req, res) => {
+router.get('/daily/trend', (req, res) => {
+  const to = req.query.to || today();
+  const from = req.query.from || daysAgo(7);
+
+  if (!isValidDate(from) || !isValidDate(to)) return res.status(400).json({ error: 'Invalid date' });
+
+  const dates = dateRange(from, to);
+  if (dates.length > 90) return res.status(400).json({ error: 'Max 90 days' });
+
+  const trend = [];
+  for (const date of dates) {
+    const cacheKey = `daily:${date}:trend`;
+    let entry = cache.get(cacheKey);
+    if (!entry) {
+      const daily = readDailyJson(date);
+      if (daily && daily.types) {
+        entry = {
+          total_records: daily.total_records || 0,
+          types: daily.types.map(t => ({ type: t.type, total_records: t.total_records || 0 })),
+        };
+      } else {
+        entry = { total_records: 0, types: [] };
+      }
+      const isToday = date === today();
+      cache.set(cacheKey, entry, isToday ? TODAY_TTL : 0);
+    }
+    trend.push({ date, ...entry });
+  }
+
+  res.json({ from, to, trend });
+});
+
+router.get('/:type/today', asyncHandler(async (req, res) => {
   const { type } = req.params;
   if (!VALID_TYPES.includes(type)) return res.status(400).json({ error: 'Invalid type' });
 
@@ -78,9 +114,9 @@ router.get('/:type/today', async (req, res) => {
   }
 
   res.json(data);
-});
+}));
 
-router.get('/:type/date/:date', async (req, res) => {
+router.get('/:type/date/:date', asyncHandler(async (req, res) => {
   const { type, date } = req.params;
   if (!VALID_TYPES.includes(type)) return res.status(400).json({ error: 'Invalid type' });
   if (!isValidDate(date)) return res.status(400).json({ error: 'Invalid date format' });
@@ -103,9 +139,9 @@ router.get('/:type/date/:date', async (req, res) => {
   }
 
   res.json(data);
-});
+}));
 
-router.get('/:type/trend', async (req, res) => {
+router.get('/:type/trend', asyncHandler(async (req, res) => {
   const { type } = req.params;
   if (!VALID_TYPES.includes(type)) return res.status(400).json({ error: 'Invalid type' });
 
@@ -131,7 +167,7 @@ router.get('/:type/trend', async (req, res) => {
   }
 
   res.json({ type, from, to, trend });
-});
+}));
 
 function daysAgo(n) {
   const d = new Date(Date.now() + 9 * 60 * 60 * 1000);

@@ -3,6 +3,7 @@
   const API = '/api/v1';
   let refreshTimer = null;
   let isAutoRefresh = false;
+  let trendDays = 7;
 
   // ---- Init ----
   function init() {
@@ -20,10 +21,10 @@
     picker.value = todayStr();
   }
 
-  // 로컬 타임존 기준 오늘 날짜 (KST)
+  // KST (UTC+9) 기준 오늘 날짜 — 서버와 동일한 로직
   function todayStr() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const d = new Date(Date.now() + 9 * 60 * 60 * 1000);
+    return d.toISOString().slice(0, 10);
   }
 
   // ---- Date Picker ----
@@ -126,6 +127,18 @@
     // Show subtabs initially since crypto is the default active tab
     document.getElementById('trendSubtabs').style.display = '';
     TrendPanel.setCoinFilter('BTC');
+
+    // Period selector
+    document.getElementById('trendPeriod').addEventListener('click', (e) => {
+      const btn = e.target.closest('.trend-period__btn');
+      if (!btn) return;
+      document.querySelectorAll('.trend-period__btn').forEach(b => b.classList.remove('trend-period__btn--active'));
+      btn.classList.add('trend-period__btn--active');
+      trendDays = parseInt(btn.dataset.days, 10);
+      const activeTab = document.querySelector('.trend-tab--active');
+      if (activeTab) loadTrend(activeTab.dataset.type);
+      loadDailyTrend();
+    });
   }
 
   // ---- Data Loading ----
@@ -169,16 +182,24 @@
     // Update timestamp to current browser time
     updateTimestamp();
 
-    // Load trend
+    // Load trends
     const activeTab = document.querySelector('.trend-tab--active');
     if (activeTab) loadTrend(activeTab.dataset.type);
+    loadDailyTrend();
   }
 
   async function loadTrend(type) {
     const to = todayStr();
-    const from = daysAgo(7);
+    const from = daysAgo(trendDays);
     const data = await fetchJSON(`${API}/${type}/trend?from=${from}&to=${to}`);
     TrendPanel.renderChart(type, data?.trend || []);
+  }
+
+  async function loadDailyTrend() {
+    const to = todayStr();
+    const from = daysAgo(trendDays);
+    const data = await fetchJSON(`${API}/daily/trend?from=${from}&to=${to}`);
+    DailyPanel.renderTrend(data?.trend || []);
   }
 
   function updateTimestamp() {
@@ -187,7 +208,7 @@
   }
 
   function daysAgo(n) {
-    const d = new Date();
+    const d = new Date(Date.now() + 9 * 60 * 60 * 1000);
     d.setDate(d.getDate() - n);
     return d.toISOString().slice(0, 10);
   }
