@@ -1,3 +1,4 @@
+// test: verify ArgoCD OutOfSync behavior
 const express = require('express');
 const compression = require('compression');
 const fs = require('fs');
