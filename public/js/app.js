@@ -126,7 +126,7 @@
 
     // Show subtabs initially since crypto is the default active tab
     document.getElementById('trendSubtabs').style.display = '';
-    TrendPanel.setCoinFilter('BTC');
+    TrendPanel.setCoinFilter('ALL');
 
     // Period selector
     document.getElementById('trendPeriod').addEventListener('click', (e) => {
