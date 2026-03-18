@@ -187,7 +187,10 @@ const PopulationPanel = (() => {
     if (isEmpty) return;
     allData = data;
     populateSelect(data);
-    const selected = document.getElementById('populationAreaSelect').value || Object.keys(data)[0];
+    const select = document.getElementById('populationAreaSelect');
+    const defaultArea = '강남역';
+    if (data[defaultArea] && select.value !== defaultArea) select.value = defaultArea;
+    const selected = select.value || Object.keys(data)[0];
     updateBadge(data[selected]);
     renderDonut(data[selected]);
     renderAreaChart(selected);
