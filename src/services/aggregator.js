@@ -132,6 +132,7 @@ function aggregateForTrend(type, rows) {
       }
       const result = {};
       for (const [name, temps] of Object.entries(locs)) {
+        if (temps.length === 0) continue;
         result[name] = {
           avg: Math.round(avg(temps) * 10) / 10,
           high: Math.max(...temps),

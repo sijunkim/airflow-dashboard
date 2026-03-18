@@ -169,12 +169,12 @@ const PopulationPanel = (() => {
       opt.textContent = area;
       select.appendChild(opt);
     });
-    select.addEventListener('change', () => {
+    select.onchange = () => {
       const selected = select.value;
       updateBadge(data[selected]);
       renderDonut(data[selected]);
       renderAreaChart(selected);
-    });
+    };
   }
 
   function render(data) {

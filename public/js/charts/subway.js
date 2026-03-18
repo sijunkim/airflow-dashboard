@@ -24,7 +24,7 @@ const SubwayPanel = (() => {
       opt.textContent = st;
       select.appendChild(opt);
     });
-    select.addEventListener('change', () => renderTable(select.value));
+    select.onchange = () => renderTable(select.value);
   }
 
   function renderTable(station) {
@@ -71,5 +71,7 @@ const SubwayPanel = (() => {
     document.getElementById('subwayLoading').classList.add('active');
   }
 
-  return { render, showLoading };
+  function destroy() {}
+
+  return { render, showLoading, destroy };
 })();

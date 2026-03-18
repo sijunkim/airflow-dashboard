@@ -45,7 +45,6 @@ const TrendPanel = (() => {
     let idx = 0;
     for (const key of keys) {
       if (type === 'crypto' && coinFilter && key !== coinFilter) {
-        idx++;
         continue;
       }
 
